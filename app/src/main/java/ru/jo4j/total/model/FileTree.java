@@ -4,6 +4,7 @@ import android.os.Environment;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FileTree implements ITree {
@@ -16,7 +17,7 @@ public class FileTree implements ITree {
 
     @Override
     public FileModel getRootDir() {
-        return new FileModel(rootDirectory.getAbsolutePath(), rootDirectory.getName(), rootDirectory.isDirectory());
+        return new FileModel(rootDirectory, new Date(123412371234134L), rootDirectory.getAbsolutePath(), rootDirectory.getName(), rootDirectory.isDirectory());
     }
 
     @Override
@@ -24,7 +25,7 @@ public class FileTree implements ITree {
         File child = new File(childAbsolutePath);
         File parent = child.getParentFile();
         if (parent != null) {
-            return new FileModel(parent.getAbsolutePath(), parent.getName(), parent.isDirectory());
+            return new FileModel(child, new Date(123412371234134L), parent.getAbsolutePath(), parent.getName(), parent.isDirectory());
         } else {
             return null;
         }
@@ -40,7 +41,7 @@ public class FileTree implements ITree {
         List<FileModel> childrenList = new ArrayList<>();
         for (File child :
                 children) {
-            childrenList.add(new FileModel(child.getAbsolutePath(), child.getName(), child.isDirectory()));
+            childrenList.add(new FileModel(parent, new Date(123412371234134L), child.getAbsolutePath(), child.getName(), child.isDirectory()));
         }
         return childrenList;
     }

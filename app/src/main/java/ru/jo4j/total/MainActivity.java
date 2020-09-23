@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -33,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
             FileModel rootDir = fileTree.getRootDir();
             initRecyclerView(fileTree.getChildrenByParent(rootDir.getAbsolutePath()));
         }
-
-
         Toolbar myChildToolbar = findViewById(R.id.toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
@@ -42,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initRecyclerView(List<FileModel> dirs) {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        adapter = new TotalAdapter(dirs);
+        adapter = new TotalAdapter(dirs, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }

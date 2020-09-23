@@ -24,12 +24,12 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.TotalViewHol
     Context context;
     private String parentAbsolutePath;
 
-    public TotalAdapter(List<FileModel> fileModels) {
+    public TotalAdapter(List<FileModel> fileModels, Context c) {
         this.fileModels = fileModels;
+        context = c;
     }
 
     public class TotalViewHolder extends RecyclerView.ViewHolder {
-
         public TotalViewHolder(@NonNull View itemView) {
             super(itemView);
         }
@@ -45,15 +45,17 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.TotalViewHol
 
     @Override
     public void onBindViewHolder(@NonNull TotalAdapter.TotalViewHolder holder, final int position) {
+        TextView dateView = holder.itemView.findViewById(R.id.dateView);
+        dateView.setText(fileModels.get(position).getDate().toString());
         TextView textView = holder.itemView.findViewById(R.id.textView);
         textView.setText("" + fileModels.get(position).getName());
-
+        TextView modifiedDateView = holder.itemView.findViewById(R.id.modifiedDateView);
+        modifiedDateView.setText(fileModels.get(position).getFormattedModificationDate(context));
         ImageView imageView = holder.itemView.findViewById(R.id.imageView);
         if (fileModels.get(position).getDirectory()) {
             Picasso.get().load(R.drawable.ic_baseline_folder_24).into(imageView);
         } else {
             Picasso.get().load(R.drawable.ic_insert_drive_file_24).into(imageView);
-
         }
 
         View itemLayout = holder.itemView.findViewById(R.id.itemLayout);
