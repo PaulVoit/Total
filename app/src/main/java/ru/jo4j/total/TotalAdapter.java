@@ -1,6 +1,10 @@
 package ru.jo4j.total;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -23,6 +28,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.TotalViewHol
     private List<FileModel> fileModels;
     Context context;
     private String parentAbsolutePath;
+    AppCompatActivity activity;
 
     public TotalAdapter(List<FileModel> fileModels, Context c) {
         this.fileModels = fileModels;
@@ -45,14 +51,15 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.TotalViewHol
 
     @Override
     public void onBindViewHolder(@NonNull TotalAdapter.TotalViewHolder holder, final int position) {
+        final FileModel currentFile = fileModels.get(position);
         TextView dateView = holder.itemView.findViewById(R.id.dateView);
-        dateView.setText(fileModels.get(position).getDate().toString());
+        dateView.setText(currentFile.getDate().toString());
         TextView textView = holder.itemView.findViewById(R.id.textView);
-        textView.setText("" + fileModels.get(position).getName());
+        textView.setText("" + currentFile.getName());
         TextView modifiedDateView = holder.itemView.findViewById(R.id.modifiedDateView);
-        modifiedDateView.setText(fileModels.get(position).getFormattedModificationDate(context));
+        modifiedDateView.setText(currentFile.getFormattedModificationDate(context));
         ImageView imageView = holder.itemView.findViewById(R.id.imageView);
-        if (fileModels.get(position).getDirectory()) {
+        if (currentFile.getDirectory()) {
             Picasso.get().load(R.drawable.ic_baseline_folder_24).into(imageView);
         } else {
             Picasso.get().load(R.drawable.ic_insert_drive_file_24).into(imageView);
@@ -62,10 +69,17 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.TotalViewHol
         itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (currentFile.getName().contains(".")) {
+                    if ((currentFile.getName().substring(currentFile.getName().lastIndexOf("."))).equals("mp3")) {
+                        Log.d("audio", "onClick: " + currentFile.getAbsolutePath());
+                        Intent intent = new Intent("audio/mp3", (Uri.parse(currentFile.getAbsolutePath())));
+                        activity.startActivity(intent);
+                    }
+                }
                 ITree fileTree = new FileTree();
-                parentAbsolutePath = fileModels.get(position).getAbsolutePath();
+                parentAbsolutePath = currentFile.getAbsolutePath();
                 List<FileModel> list;
-                if (((list) = fileTree.getChildrenByParent(fileModels.get(position).getAbsolutePath())) != null) {
+                if (((list) = fileTree.getChildrenByParent(currentFile.getAbsolutePath())) != null) {
                     fileModels = list;
                     notifyDataSetChanged();
                 }
